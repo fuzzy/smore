@@ -1,0 +1,63 @@
+package main
+
+import (
+	"errors"
+	"fmt"
+	"io/ioutil"
+	"log"
+	"os"
+	"strings"
+
+	"gopkg.in/yaml.v2"
+)
+
+type Config struct {
+	Interface string `yaml:"interface"`
+	Port      int    `yaml:"port"`
+	Dirs      struct {
+		Root      string
+		Base      string `yaml:"base"`
+		Static    string `yaml:"static"`
+		Templates string `yaml:"templates"`
+		Content   string `yaml:"content"`
+	} `yaml:"dirs"`
+	Git struct {
+		Repo     string `yaml:"repo_url"`
+		Interval string `yaml:"repo_interval"`
+	} `yaml:"git"`
+}
+
+func ReadConfig(fn string) (*Config, error) {
+	retv := &Config{}
+	if _, err := os.Stat(fn); err != nil {
+		log.Fatal(err)
+	}
+
+	data, err := ioutil.ReadFile(fn)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	err = yaml.Unmarshal([]byte(data), retv)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	if retv.Git.Repo != "" {
+		data := strings.Split(retv.Git.Repo, "/")
+		retv.Dirs.Root = retv.Dirs.Base
+		tdir := fmt.Sprintf("%s/%s", retv.Dirs.Base, data[len(data)-1])
+		retv.Dirs.Base = tdir
+		tdir = fmt.Sprintf("%s/%s", retv.Dirs.Base, retv.Dirs.Content)
+		retv.Dirs.Content = tdir
+		tdir = fmt.Sprintf("%s/%s", retv.Dirs.Base, retv.Dirs.Static)
+		retv.Dirs.Static = tdir
+		tdir = fmt.Sprintf("%s/%s", retv.Dirs.Base, retv.Dirs.Templates)
+		retv.Dirs.Templates = tdir
+	} else {
+		return &Config{}, errors.New("No git repo configured")
+	}
+
+	log.Printf("Read config: %s", fn)
+	return retv, nil
+}
