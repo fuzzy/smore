@@ -27,11 +27,7 @@ func Router(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func ServeOrg(w http.ResponseWriter, r *http.Request) {
-	return
-}
-
-func ServeMdown(w http.ResponseWriter, r *http.Request) {
+func ServeMarkup(w http.ResponseWriter, r *http.Request) {
 	return
 }
 
