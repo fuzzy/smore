@@ -1,4 +1,4 @@
-module main
+module george
 
 go 1.12
 
