@@ -1,6 +1,9 @@
 package main
 
-import "log"
+import (
+	"log"
+	"os"
+)
 
 func lcheck(e error) error {
 	if e != nil {
@@ -14,4 +17,11 @@ func check(e error) {
 	if e != nil {
 		log.Fatal(e)
 	}
+}
+
+func isFile(t string) bool {
+	if _, err := os.Stat(t); os.IsNotExist(err) {
+		return false
+	}
+	return true
 }

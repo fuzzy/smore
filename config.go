@@ -1,7 +1,6 @@
 package main
 
 import (
-	"errors"
 	"fmt"
 	"io/ioutil"
 	"log"
@@ -14,6 +13,7 @@ import (
 type Config struct {
 	Interface string `yaml:"interface"`
 	Port      int    `yaml:"port"`
+	Template  string `yaml:"template"`
 	Dirs      struct {
 		Root      string
 		Base      string `yaml:"base"`
@@ -27,7 +27,7 @@ type Config struct {
 	} `yaml:"git"`
 }
 
-func ReadConfig(fn string) (*Config, error) {
+func ReadConfig(fn string) *Config {
 	retv := &Config{}
 	if _, err := os.Stat(fn); err != nil {
 		log.Fatal(err)
@@ -55,9 +55,9 @@ func ReadConfig(fn string) (*Config, error) {
 		tdir = fmt.Sprintf("%s/%s", retv.Dirs.Base, retv.Dirs.Templates)
 		retv.Dirs.Templates = tdir
 	} else {
-		return &Config{}, errors.New("No git repo configured")
+		log.Fatal("No git repo configured")
 	}
 
 	log.Printf("Read config: %s", fn)
-	return retv, nil
+	return retv
 }

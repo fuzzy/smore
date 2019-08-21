@@ -9,15 +9,17 @@ import (
 	"github.com/urfave/cli"
 )
 
+var cfg *Config
+
 func AppStart(c *cli.Context) error {
-	cfg, _ := ReadConfig(c.String("config"))
+	cfg = ReadConfig(c.String("config"))
 
 	// clone and/or update the repo
 	CloneRepo(cfg.Git.Repo, cfg.Dirs.Base)
 	UpdateRepo(cfg.Dirs.Base)
 
 	// setup our http handlers
-	http.Handle("/static", http.FileServer(http.Dir(cfg.Dirs.Static)))
+	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir(cfg.Dirs.Static))))
 	http.HandleFunc("/", Router)
 
 	// and finally
