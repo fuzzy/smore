@@ -34,11 +34,22 @@ func highlightCodeBlock(source, lang string) string {
 }
 
 func ServeMarkup(w http.ResponseWriter, r *http.Request) {
-	_tmpf := fmt.Sprintf("%s/%s", cfg.Dirs.Templates, cfg.Template)
 	_path := fmt.Sprintf("%s%s", cfg.Dirs.Content, r.URL.Path)
+	_tmpf := fmt.Sprintf("%s/%s", cfg.Dirs.Templates, cfg.Template)
+
+	if string(_path[len(_path)-1]) == "/" {
+		for _, index := range []string{"index.org", "index.md"} {
+			if isFile(fmt.Sprintf("%s%s%s", cfg.Dirs.Content, r.URL.Path, index)) {
+				_path = fmt.Sprintf("%s%s%s", cfg.Dirs.Content, r.URL.Path, index)
+				break
+			}
+		}
+	}
+
 	_extt := strings.Split(_path, ".")
 	_ext := _extt[len(_extt)-1]
 
+	// if we have no file we should reference an index
 	if isFile(_path) {
 		// read in the org document
 		bs, err := ioutil.ReadFile(_path)
@@ -47,8 +58,6 @@ func ServeMarkup(w http.ResponseWriter, r *http.Request) {
 		// now parse that data accordingly
 		switch _ext {
 		case "org":
-			out := ""
-
 			// setup the template
 			title := "SMORE"
 			_tmpd, err := ioutil.ReadFile(_tmpf)
@@ -62,7 +71,7 @@ func ServeMarkup(w http.ResponseWriter, r *http.Request) {
 			// and setup the html output
 			writer := org.NewHTMLWriter()
 			writer.HighlightCodeBlock = highlightCodeBlock
-			out, err = orgDoc.Write(writer)
+			out, err := orgDoc.Write(writer)
 			check(err)
 
 			// setup the payload
@@ -81,10 +90,7 @@ func ServeMarkup(w http.ResponseWriter, r *http.Request) {
 			check(err)
 		case "md":
 			log.Println("It's an Markdown file!")
-		default:
-			log.Printf("It's a %s file!", _ext)
 		}
 	}
-
 	return
 }

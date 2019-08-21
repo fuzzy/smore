@@ -20,8 +20,9 @@ func check(e error) {
 }
 
 func isFile(t string) bool {
-	if _, err := os.Stat(t); os.IsNotExist(err) {
+	info, err := os.Stat(t)
+	if os.IsNotExist(err) {
 		return false
 	}
-	return true
+	return !info.IsDir()
 }
