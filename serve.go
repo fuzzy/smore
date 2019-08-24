@@ -19,7 +19,11 @@ import (
 
 func Router(w http.ResponseWriter, r *http.Request) {
 	log.Printf("Request: %s %s from %s\n", r.Method, r.URL.Path, r.RemoteAddr)
-	ServeMarkup(w, r)
+	if r.Method == "POST" {
+		GitWebHook(w, r)
+	} else {
+		ServeMarkup(w, r)
+	}
 }
 
 func highlightCodeBlock(source, lang string) string {
