@@ -10,7 +10,7 @@ import (
 func GitWebHook(w http.ResponseWriter, r *http.Request) {
 	body, err := ioutil.ReadAll(r.Body)
 	check(err)
-	log.Println(body)
+	log.Println(string(body))
 
 	switch r.Method {
 	case "POST":
