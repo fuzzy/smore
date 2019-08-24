@@ -2,11 +2,16 @@ package main
 
 import (
 	"fmt"
+	"io/ioutil"
+	"log"
 	"net/http"
 )
 
 func GitWebHook(w http.ResponseWriter, r *http.Request) {
-	fmt.Printf("%+v\n", r.Body)
+	body, err := ioutil.ReadAll(r.Body)
+	check(err)
+	log.Println(body)
+
 	switch r.Method {
 	case "POST":
 		// Call ParseForm() to parse the raw query and update r.PostForm and r.Form.
