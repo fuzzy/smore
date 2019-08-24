@@ -13,7 +13,6 @@ import (
 	"github.com/alecthomas/chroma/formatters/html"
 	"github.com/alecthomas/chroma/lexers"
 	"github.com/alecthomas/chroma/styles"
-	"github.com/microcosm-cc/bluemonday"
 	"github.com/niklasfasching/go-org/org"
 	"gopkg.in/russross/blackfriday.v2"
 )
@@ -83,17 +82,16 @@ func ServeMarkup(w http.ResponseWriter, r *http.Request) {
 			// and setup the html output
 			writer := org.NewHTMLWriter()
 			writer.HighlightCodeBlock = highlightCodeBlock
-			_html, err := orgDoc.Write(writer)
-			html := bluemonday.UGCPolicy().SanitizeBytes([]byte(_html))
+			html, err := orgDoc.Write(writer)
 			check(err)
 
 			// setup the payload
 			_data.Payload = string(html)
 		case "md":
 			// read in and parse the markdown
-			unsafe := blackfriday.Run(bs)
+			html := blackfriday.Run(bs)
 			// sanitize the html
-			html := bluemonday.UGCPolicy().SanitizeBytes(unsafe)
+			// html := bluemonday.UGCPolicy().SanitizeBytes(unsafe)
 			// setup the payload
 			_data.Payload = string(html)
 		}

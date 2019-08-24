@@ -8,5 +8,8 @@ dirs:
   templates: templates
   content: content
 git:
-  repo_url: https://git.devfu.net/fuzzy/fuzzy-devfu-net
-  repo_interval: 60
+  repo: https://git.devfu.net/fuzzy/fuzzy-devfu-net
+  interval: 60
+  webhook:
+    enable: true
+    secret: e64cfa9b4e545073a75dfa28bef4ade6
