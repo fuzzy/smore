@@ -3,14 +3,13 @@ package main
 import (
 	"fmt"
 	"io/ioutil"
-	"log"
 	"net/http"
 )
 
 func GitWebHook(w http.ResponseWriter, r *http.Request) {
 	body, err := ioutil.ReadAll(r.Body)
 	check(err)
-	log.Println(string(body))
+	fmt.Println(string(body))
 
 	switch r.Method {
 	case "POST":
