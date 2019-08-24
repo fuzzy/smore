@@ -13,7 +13,9 @@ import (
 	"github.com/alecthomas/chroma/formatters/html"
 	"github.com/alecthomas/chroma/lexers"
 	"github.com/alecthomas/chroma/styles"
+	"github.com/microcosm-cc/bluemonday"
 	"github.com/niklasfasching/go-org/org"
+	"gopkg.in/russross/blackfriday.v2"
 )
 
 func Router(w http.ResponseWriter, r *http.Request) {
@@ -55,42 +57,50 @@ func ServeMarkup(w http.ResponseWriter, r *http.Request) {
 		bs, err := ioutil.ReadFile(_path)
 		check(err)
 
+		// setup the template
+		title := "SMORE"
+		_tmpd, err := ioutil.ReadFile(_tmpf)
+		check(err)
+		_tmpl, err := template.New(title).Parse(string(_tmpd))
+		check(err)
+
+		// setup the template structure
+		_data := struct {
+			Path    string
+			Title   string
+			Payload string
+		}{
+			Path:  _path,
+			Title: title,
+		}
+
 		// now parse that data accordingly
 		switch _ext {
 		case "org":
-			// setup the template
-			title := "SMORE"
-			_tmpd, err := ioutil.ReadFile(_tmpf)
-			check(err)
-			_tmpl, err := template.New(title).Parse(string(_tmpd))
-			check(err)
-
 			// read and parse the org document
 			orgDoc := org.New().Parse(bytes.NewReader(bs), _path)
 
 			// and setup the html output
 			writer := org.NewHTMLWriter()
 			writer.HighlightCodeBlock = highlightCodeBlock
-			out, err := orgDoc.Write(writer)
+			_html, err := orgDoc.Write(writer)
+			html := bluemonday.UGCPolicy().SanitizeBytes([]byte(_html))
 			check(err)
 
 			// setup the payload
-			_data := struct {
-				Path    string
-				Title   string
-				Payload string
-			}{
-				Path:    fmt.Sprintf(_path),
-				Title:   title,
-				Payload: string(out),
-			}
-
-			// and actually pump out the output
-			err = _tmpl.Execute(w, _data)
-			check(err)
+			_data.Payload = string(html)
 		case "md":
-			log.Println("It's an Markdown file!")
+			// read in and parse the markdown
+			unsafe := blackfriday.Run(bs)
+			// sanitize the html
+			html := bluemonday.UGCPolicy().SanitizeBytes(unsafe)
+			// setup the payload
+			_data.Payload = string(html)
 		}
+
+		// and actually pump out the output
+		err = _tmpl.Execute(w, _data)
+		check(err)
 	}
 	return
 }
