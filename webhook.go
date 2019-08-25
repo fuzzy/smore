@@ -30,7 +30,7 @@ func verifySignature(secret []byte, signature string, body []byte) bool {
 	actual := make([]byte, 20)
 	hex.Decode(actual, []byte(signature[5:]))
 
-	return hmac.Equal(signBody(cfg.Git.Webhook.Secret, body), actual)
+	return hmac.Equal(signBody([]byte(cfg.Git.Webhook.Secret), body), actual)
 }
 
 type HookContext struct {
