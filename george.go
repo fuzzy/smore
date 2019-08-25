@@ -19,6 +19,9 @@ func AppStart(c *cli.Context) error {
 	UpdateRepo(cfg.Dirs.Base)
 
 	// setup our http handlers
+	if cfg.Git.Webhook.Enable {
+		http.HandleFunc("/webhook", GitWebHook)
+	}
 	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir(cfg.Dirs.Static))))
 	http.HandleFunc("/", Router)
 
