@@ -6,11 +6,14 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"io"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"strings"
+
+	"gopkg.in/src-d/go-git.v4"
 )
 
 func signBody(secret, body []byte) []byte {
@@ -93,6 +96,17 @@ func GitWebHook(w http.ResponseWriter, r *http.Request) {
 		log.Printf("Updating repo from: %s", pload.Repository.CloneURL)
 		log.Printf("Updating repo branch: %s", pload.Repository.DefaultBranch)
 		log.Printf("Updating repo to commit: %s", pload.After)
+		// get the repo path
+		rname := strings.Split(cfg.Git.Repo, "/")
+		rpath := fmt.Sprintf("%s/%s", cfg.Dirs.Base, rname[len(rname)-1])
+		// open the repository
+		repo, err := git.PlainOpen(rpath)
+		check(err)
+		// get the working tree
+		wdir, err := repo.Worktree()
+		check(err)
+		// and pull the updates
+		err = wdir.Pull(&git.PullOptions{})
 	}
 	// and return our successful status
 	w.WriteHeader(http.StatusOK)
