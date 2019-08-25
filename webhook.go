@@ -43,7 +43,7 @@ type HookContext struct {
 func ParseHook(secret []byte, req *http.Request) (*HookContext, error) {
 	hc := HookContext{}
 
-	if hc.Signature = req.Header.Get("x-hub-signature"); len(hc.Signature) == 0 {
+	if hc.Signature = req.Header.Get("x-gitea-signature"); len(hc.Signature) == 0 {
 		return nil, errors.New("No signature!")
 	}
 
@@ -72,6 +72,7 @@ func ParseHook(secret []byte, req *http.Request) (*HookContext, error) {
 
 func GitWebHook(w http.ResponseWriter, r *http.Request) {
 
+	log.Println(cfg.Git.Webhook.Secret)
 	hc, err := ParseHook([]byte(cfg.Git.Webhook.Secret), r)
 
 	w.Header().Set("Content-type", "application/json")
