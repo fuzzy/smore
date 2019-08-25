@@ -2,14 +2,12 @@ package main
 
 import (
 	"fmt"
-	"io/ioutil"
+	"log"
 	"net/http"
 )
 
 func GitWebHook(w http.ResponseWriter, r *http.Request) {
-	body, err := ioutil.ReadAll(r.Body)
-	check(err)
-	fmt.Println(string(body))
+	log.Printf("%+v\n", r)
 
 	switch r.Method {
 	case "POST":
