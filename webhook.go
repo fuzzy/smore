@@ -4,6 +4,7 @@ import (
 	"crypto/hmac"
 	"crypto/sha1"
 	"encoding/hex"
+	"encoding/json"
 	"errors"
 	"io"
 	"io/ioutil"
@@ -85,7 +86,11 @@ func GitWebHook(w http.ResponseWriter, r *http.Request) {
 	}
 
 	log.Printf("Received %s", hc.Event)
-	log.Println(string(hc.Payload))
+
+	pload := GiteaPush{}
+	json.Unmarshal(hc.Payload, &pload)
+
+	log.Printf("%+v\n", pload)
 	// parse `hc.Payload` or do additional processing here
 
 	w.WriteHeader(http.StatusOK)
