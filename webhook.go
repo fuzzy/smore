@@ -6,7 +6,6 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"errors"
-	"fmt"
 	"io"
 	"io/ioutil"
 	"log"
@@ -101,14 +100,8 @@ func GitWebHook(w http.ResponseWriter, r *http.Request) {
 		log.Printf("Updating repo branch: %s", pload.Repository.DefaultBranch)
 		log.Printf("Updating repo to commit: %s", pload.After)
 
-		// get the repo path
-		rname := strings.Split(cfg.Git.Repo, "/")
-		log.Printf("DEBUG: rname = %s", rname)
-		rpath := fmt.Sprintf("%s/%s", cfg.Dirs.Base, rname[len(rname)-1])
-		log.Printf("DEBUG: rpath = %s", rpath)
-
 		// open the repository
-		repo, err := git.PlainOpen(rpath)
+		repo, err := git.PlainOpen(cfg.Dirs.Base)
 		check(err)
 
 		// get the working tree
