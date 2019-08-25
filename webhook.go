@@ -72,27 +72,28 @@ func ParseHook(secret []byte, req *http.Request) (*HookContext, error) {
 }
 
 func GitWebHook(w http.ResponseWriter, r *http.Request) {
-
-	log.Println(cfg.Git.Webhook.Secret)
+	// parse the hook, This code I got from git examples and have
+	// adapted to support Gitea currently, will soon allow for more
+	// providers to be supported.
 	hc, err := ParseHook([]byte(cfg.Git.Webhook.Secret), r)
-
+	// set our output header
 	w.Header().Set("Content-type", "application/json")
-
+	// gracefully handle any errors
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		log.Printf("Failed processing hook! ('%s')", err)
 		io.WriteString(w, "{}")
 		return
 	}
-
-	log.Printf("Received %s", hc.Event)
-
+	// at the moment I only support gitea, this should change soon
 	pload := GiteaPush{}
 	json.Unmarshal(hc.Payload, &pload)
-
-	log.Printf("%+v\n", pload)
-	// parse `hc.Payload` or do additional processing here
-
+	// if our secret matches then we should go ahead and update our checkout
+	if pload.Secret == cfg.Git.Webhook.Secret {
+		log.Printf("Updating repo from: %s", pload.CloneURL)
+		log.Printf("Updating repo to commit: %s", pload.After)
+	}
+	// and return our successful status
 	w.WriteHeader(http.StatusOK)
 	io.WriteString(w, "{}")
 	return
