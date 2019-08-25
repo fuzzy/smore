@@ -85,7 +85,7 @@ func GitWebHook(w http.ResponseWriter, r *http.Request) {
 	}
 
 	log.Printf("Received %s", hc.Event)
-	log.Printf("%+v\n", hc.Payload)
+	log.Println(string(hc.Payload))
 	// parse `hc.Payload` or do additional processing here
 
 	w.WriteHeader(http.StatusOK)
