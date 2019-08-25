@@ -79,8 +79,10 @@ func GitWebHook(w http.ResponseWriter, r *http.Request) {
 	// adapted to support Gitea currently, will soon allow for more
 	// providers to be supported.
 	hc, err := ParseHook([]byte(cfg.Git.Webhook.Secret), r)
+
 	// set our output header
 	w.Header().Set("Content-type", "application/json")
+
 	// gracefully handle any errors
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
@@ -88,30 +90,41 @@ func GitWebHook(w http.ResponseWriter, r *http.Request) {
 		io.WriteString(w, "{}")
 		return
 	}
+
 	// at the moment I only support gitea, this should change soon
 	pload := GiteaPush{}
 	json.Unmarshal(hc.Payload, &pload)
+
 	// if our secret matches then we should go ahead and update our checkout
 	if pload.Secret == cfg.Git.Webhook.Secret {
 		log.Printf("Updating repo from: %s", pload.Repository.CloneURL)
 		log.Printf("Updating repo branch: %s", pload.Repository.DefaultBranch)
 		log.Printf("Updating repo to commit: %s", pload.After)
+
 		// get the repo path
 		rname := strings.Split(cfg.Git.Repo, "/")
+		log.Printf("DEBUG: rname = %s", rname)
 		rpath := fmt.Sprintf("%s/%s", cfg.Dirs.Base, rname[len(rname)-1])
+		log.Printf("DEBUG: rpath = %s", rpath)
+
 		// open the repository
 		repo, err := git.PlainOpen(rpath)
 		check(err)
+
 		// get the working tree
 		wdir, err := repo.Worktree()
 		check(err)
+
 		// and pull the updates
 		err = wdir.Pull(&git.PullOptions{})
 		check(err)
 		log.Println("Updating repo: SUCCESS")
 	}
+
 	// and return our successful status
 	w.WriteHeader(http.StatusOK)
 	io.WriteString(w, "{}")
+
+	// and hand everything back
 	return
 }
