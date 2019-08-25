@@ -107,6 +107,8 @@ func GitWebHook(w http.ResponseWriter, r *http.Request) {
 		check(err)
 		// and pull the updates
 		err = wdir.Pull(&git.PullOptions{})
+		check(err)
+		log.Println("Updating repo: SUCCESS")
 	}
 	// and return our successful status
 	w.WriteHeader(http.StatusOK)
