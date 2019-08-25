@@ -16,7 +16,11 @@ func AppStart(c *cli.Context) error {
 
 	// clone and/or update the repo
 	CloneRepo(cfg.Git.Repo, cfg.Dirs.Base)
-	UpdateRepo(cfg.Dirs.Base)
+
+	// if we have a non 0 interval we should start the update thread
+	if cfg.Git.Interval >= 1 {
+		go UpdateRepo(cfg.Dirs.Base, cfg.Git.Interval)
+	}
 
 	// setup our http handlers
 	if cfg.Git.Webhook.Enable {

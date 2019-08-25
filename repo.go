@@ -1,6 +1,8 @@
 package main
 
 import (
+	"time"
+
 	"gopkg.in/src-d/go-git.v4"
 )
 
@@ -25,18 +27,21 @@ func CloneRepo(r, b string) error {
 	return nil
 }
 
-func UpdateRepo(r string) error {
-	repo, err := git.PlainOpen(r)
-	if lcheck(err) != nil && !safeError(err) {
-		return err
+func UpdateRepo(r string, i int) error {
+	for {
+		repo, err := git.PlainOpen(r)
+		if lcheck(err) != nil && !safeError(err) {
+			return err
+		}
+		wdir, err := repo.Worktree()
+		if lcheck(err) != nil && !safeError(err) {
+			return err
+		}
+		err = wdir.Pull(&git.PullOptions{})
+		if lcheck(err) != nil && !safeError(err) {
+			return err
+		}
+		return nil
+		time.Sleep(i * time.Second)
 	}
-	wdir, err := repo.Worktree()
-	if lcheck(err) != nil && !safeError(err) {
-		return err
-	}
-	err = wdir.Pull(&git.PullOptions{})
-	if lcheck(err) != nil && !safeError(err) {
-		return err
-	}
-	return nil
 }
