@@ -91,6 +91,7 @@ func GitWebHook(w http.ResponseWriter, r *http.Request) {
 	// if our secret matches then we should go ahead and update our checkout
 	if pload.Secret == cfg.Git.Webhook.Secret {
 		log.Printf("Updating repo from: %s", pload.Repository.CloneURL)
+		log.Printf("Updating repo branch: %s", pload.Repository.DefaultBranch)
 		log.Printf("Updating repo to commit: %s", pload.After)
 	}
 	// and return our successful status
