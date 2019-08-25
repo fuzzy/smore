@@ -72,7 +72,7 @@ func ParseHook(secret []byte, req *http.Request) (*HookContext, error) {
 
 func GitWebHook(w http.ResponseWriter, r *http.Request) {
 
-	hc, err := ParseHook([]byte(secret), r)
+	hc, err := ParseHook([]byte(cfg.Git.Webhook.Secret), r)
 
 	w.Header().Set("Content-type", "application/json")
 
