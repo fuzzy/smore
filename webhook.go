@@ -1,59 +1,96 @@
 package main
 
 import (
-	"fmt"
+	"crypto/hmac"
+	"crypto/sha1"
+	"encoding/hex"
+	"errors"
+	"io"
+	"io/ioutil"
 	"log"
 	"net/http"
+	"strings"
 )
 
-func GitWebHook(w http.ResponseWriter, r *http.Request) {
-	log.Printf("%+v\n", r)
+// Replace with your hook's secret
+const secret = "shhhhh!!"
 
-	switch r.Method {
-	case "POST":
-		// Call ParseForm() to parse the raw query and update r.PostForm and r.Form.
-		if err := r.ParseForm(); err != nil {
-			fmt.Fprintf(w, "ParseForm() err: %v", err)
-			return
-		}
-		fmt.Fprintf(w, "Post from website! r.PostFrom = %v\n", r.PostForm)
-	default:
-		fmt.Fprintf(w, "Sorry, only GET and POST methods are supported.")
-	}
+func signBody(secret, body []byte) []byte {
+	computed := hmac.New(sha1.New, secret)
+	computed.Write(body)
+	return []byte(computed.Sum(nil))
 }
 
-// &{
-// 	Method:POST
-// URL: /webhook
-// 	Proto:HTTP/1.1
-// 	ProtoMajor:1
-// 	ProtoMinor:1
-// 	Header:map[Accept-Encoding:[gzip]
-// 		Content-Length:[3163]
-// 		Content-Type:[application/json]
-// 		User-Agent:[Go-http-client/1.1]
-// 		X-Gitea-Delivery:[460ed7e6-352d-440c-815a-6fcebe519a1d]
-// 		X-Gitea-Event:[push]
-// 		X-Gitea-Signature:[bc5fce2c947a37217fc30bed8a448e9464f77800a8824db15e7c50f4c4635d5b]
-// 		X-Github-Delivery:[460ed7e6-352d-440c-815a-6fcebe519a1d]
-// 		X-Github-Event:[push]
-// 		X-Gogs-Delivery:[460ed7e6-352d-440c-815a-6fcebe519a1d]
-// 		X-Gogs-Event:[push]
-// 		X-Gogs-Signature:[bc5fce2c947a37217fc30bed8a448e9464f77800a8824db15e7c50f4c4635d5b]]
-// 	Body:0xc00044c280
-// 	GetBody:<nil>
-// 		ContentLength:3163
-// 	TransferEncoding:[]
-// 	Close:false
-// 	Host:george-devfu-net:8080
-// 	Form:map[]
-// 	PostForm:map[]
-// 	MultipartForm:<nil>
-// 		Trailer:map[]
-// 	RemoteAddr:10.0.0.156:39836
-// RequestURI:/webhook
-// 	TLS:<nil>
-// 		Cancel:<nil>
-// 		Response:<nil>
-// 		ctx:0xc00044c2c0
-// }
+func verifySignature(secret []byte, signature string, body []byte) bool {
+
+	const signaturePrefix = "sha1="
+	const signatureLength = 45 // len(SignaturePrefix) + len(hex(sha1))
+
+	if len(signature) != signatureLength || !strings.HasPrefix(signature, signaturePrefix) {
+		return false
+	}
+
+	actual := make([]byte, 20)
+	hex.Decode(actual, []byte(signature[5:]))
+
+	return hmac.Equal(signBody(secret, body), actual)
+}
+
+type HookContext struct {
+	Signature string
+	Event     string
+	Id        string
+	Payload   []byte
+}
+
+func ParseHook(secret []byte, req *http.Request) (*HookContext, error) {
+	hc := HookContext{}
+
+	if hc.Signature = req.Header.Get("x-hub-signature"); len(hc.Signature) == 0 {
+		return nil, errors.New("No signature!")
+	}
+
+	if hc.Event = req.Header.Get("x-github-event"); len(hc.Event) == 0 {
+		return nil, errors.New("No event!")
+	}
+
+	if hc.Id = req.Header.Get("x-github-delivery"); len(hc.Id) == 0 {
+		return nil, errors.New("No event Id!")
+	}
+
+	body, err := ioutil.ReadAll(req.Body)
+
+	if err != nil {
+		return nil, err
+	}
+
+	if !verifySignature(secret, hc.Signature, body) {
+		return nil, errors.New("Invalid signature")
+	}
+
+	hc.Payload = body
+
+	return &hc, nil
+}
+
+func GitWebHook(w http.ResponseWriter, r *http.Request) {
+
+	hc, err := ParseHook([]byte(secret), r)
+
+	w.Header().Set("Content-type", "application/json")
+
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		log.Printf("Failed processing hook! ('%s')", err)
+		io.WriteString(w, "{}")
+		return
+	}
+
+	log.Printf("Received %s", hc.Event)
+
+	// parse `hc.Payload` or do additional processing here
+
+	w.WriteHeader(http.StatusOK)
+	io.WriteString(w, "{}")
+	return
+}
