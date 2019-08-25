@@ -1,4 +1,4 @@
-module george
+module smore
 
 go 1.12
 

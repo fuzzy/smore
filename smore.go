@@ -32,11 +32,11 @@ func AppStart(c *cli.Context) error {
 
 func main() {
 	app := cli.NewApp()
-	app.Name = "GeORGe"
+	app.Name = "SMORE"
 	app.Usage = "Render Org/MarkDown files as HTML, on the fly."
 	app.Version = "0.0.1"
 	app.Flags = []cli.Flag{
-		cli.StringFlag{Name: "config", Value: "/app/george.yml", Usage: "Specify the config file to use."},
+		cli.StringFlag{Name: "config", Value: "/app/smore.yml", Usage: "Specify the config file to use."},
 	}
 	app.Action = AppStart
 	err := app.Run(os.Args)
