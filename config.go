@@ -23,7 +23,7 @@ type Config struct {
 	} `yaml:"dirs"`
 	Git struct {
 		Repo     string `yaml:"repo"`
-		Interval int    `yaml:"interval"`
+		Interval int64    `yaml:"interval"`
 		Webhook  struct {
 			Enable bool   `yaml:"webhook"`
 			Secret string `yaml:"secret"`

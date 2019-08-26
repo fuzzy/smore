@@ -27,7 +27,7 @@ func CloneRepo(r, b string) error {
 	return nil
 }
 
-func UpdateRepo(r string, i int) error {
+func UpdateRepo(r string, i int64) error {
 	for {
 		repo, err := git.PlainOpen(r)
 		if lcheck(err) != nil && !safeError(err) {
@@ -42,6 +42,6 @@ func UpdateRepo(r string, i int) error {
 			return err
 		}
 		return nil
-		time.Sleep(i * time.Second)
+		time.Sleep(1 * time.Second)
 	}
 }
