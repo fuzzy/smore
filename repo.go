@@ -27,21 +27,20 @@ func CloneRepo(r, b string) error {
 	return nil
 }
 
-func UpdateRepo(r string, i int64) error {
+func UpdateRepo(r string, i int64) {
 	for {
 		repo, err := git.PlainOpen(r)
 		if lcheck(err) != nil && !safeError(err) {
-			return err
+			log.Fatal(err)
 		}
 		wdir, err := repo.Worktree()
 		if lcheck(err) != nil && !safeError(err) {
-			return err
+			log.Fatal(err)
 		}
 		err = wdir.Pull(&git.PullOptions{})
 		if lcheck(err) != nil && !safeError(err) {
-			return err
+			log.Fatal(err)
 		}
-		return nil
 		time.Sleep(1 * time.Second)
 	}
 }
