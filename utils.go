@@ -26,3 +26,11 @@ func isFile(t string) bool {
 	}
 	return !info.IsDir()
 }
+
+func isDir(t string) bool {
+	info, err := os.Stat(t)
+	if os.IsNotExist(err) {
+		return false
+	}
+	return info.IsDir()
+}
