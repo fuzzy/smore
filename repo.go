@@ -42,6 +42,6 @@ func UpdateRepo(r string, i int64) {
 		if lcheck(err) != nil && !safeError(err) {
 			log.Fatal(err)
 		}
-		time.Sleep(1 * time.Second)
+		time.Sleep(time.Duration(i) * time.Second)
 	}
 }
