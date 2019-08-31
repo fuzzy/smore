@@ -5,6 +5,7 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
+	"strconv"
 	"strings"
 
 	"gopkg.in/yaml.v2"
@@ -45,14 +46,16 @@ func envConfigUpdate(c *Config) {
 		"SMORE_GIT_INTERVAL":   "", // emp disable the update interval, set to a number otherwise
 		"SMORE_GIT_WEBHOOK":    "", // empty disables the webhook, contains secret otherwise
 	}
-	for k, v := range vars {
+	for k, _ := range vars {
 		ev, ef := os.LookupEnv(k)
 		if ef {
 			switch k {
 			case "SMORE_INTERFACE":
 				c.Interface = ev
 			case "SMORE_PORT":
-				c.Port = int(ev)
+				_p, err := strconv.ParseInt(ev, 10, 32)
+				check(err)
+				c.Port = _p
 			case "SMORE_TEMPLATE":
 				c.Template = ev
 			case "SMORE_DIRS_ROOT":
@@ -68,7 +71,9 @@ func envConfigUpdate(c *Config) {
 			case "SMORE_GIT_REPO":
 				c.Git.Repo = ev
 			case "SMORE_GIT_INTERVAL":
-				c.Git.Interval = int64(ev)
+				_i, err := strconv.ParseInt(ev, 10, 64)
+				check(err)
+				c.Git.Interval = _i
 			case "SMORE_GIT_WEBHOOK":
 				c.Git.Webhook.Enable = true
 				c.Git.Webhook.Secret = ev
@@ -120,7 +125,7 @@ func ReadConfig(fn string) *Config {
 	log.Printf("Read config: %s", fn)
 
 	// let's see if the environment has anything to say about it
-	envConfigUpdate(&retv)
+	envConfigUpdate(retv)
 
 	return retv
 }
