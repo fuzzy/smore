@@ -21,9 +21,9 @@ type HookContext struct {
 func ParseHook(secret []byte, req *http.Request) (*HookContext, error) {
 	hc := HookContext{}
 
-	if hc.Signature = req.Header.Get("x-gitea-signature"); len(hc.Signature) == 0 {
-		return nil, errors.New("No signature!")
-	}
+	// if hc.Signature = req.Header.Get("x-gitea-signature"); len(hc.Signature) == 0 {
+	// 	return nil, errors.New("No signature!")
+	// }
 	if hc.Event = req.Header.Get("x-github-event"); len(hc.Event) == 0 {
 		return nil, errors.New("No event!")
 	}
