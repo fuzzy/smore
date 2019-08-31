@@ -8,7 +8,7 @@ dirs:
   templates: templates
   content: content
 git:
-  repo: https://git.devfu.net/fuzzy/fuzzy-devfu-net
+  repo: https://git.devfu.net/fuzzy/blog-devfu-net
   interval: 60
   webhook:
     enable: true
