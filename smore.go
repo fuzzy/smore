@@ -5,17 +5,47 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"path"
 
+	"github.com/fsnotify/fsnotify"
 	"github.com/urfave/cli"
 )
 
 var cfg *Config
 
 func AppStart(c *cli.Context) error {
+	// creates a new file watcher
+	watcher, err := fsnotify.NewWatcher()
+	check(err)
+	defer watcher.Close()
+
+	// read in our config initally
 	cfg = ReadConfig(c.String("config"))
 
-	// clone and/or update the repo
-	CloneRepo(cfg.Git.Repo, cfg.Dirs.Base)
+	go func() {
+		for {
+			select {
+			case event := <-watcher.Events:
+				if event.Op.String() == "WRITE" {
+					cfg = ReadConfig(c.String("config"))
+					log.Println("Rereading %s", c.String("config"))
+				}
+				// watch for errors
+			case err := <-watcher.Errors:
+				log.Println("ERROR", err)
+			}
+		}
+	}()
+
+	// out of the box fsnotify can watch a single file, or a single directory
+	if err := watcher.Add(c.String("config")); err != nil {
+		log.Fatal(err)
+	}
+
+	if !isDir(fmt.Sprintf("%s/%s", cfg.Dirs.Base, path.Base(cfg.Git.Repo))) {
+		// clone and/or update the repo
+		CloneRepo(cfg.Git.Repo, cfg.Dirs.Base)
+	}
 
 	// if we have a non 0 interval we should start the update thread
 	if cfg.Git.Interval >= 1 {
