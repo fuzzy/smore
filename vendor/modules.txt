@@ -41,6 +41,8 @@ github.com/emirpasic/gods/lists/arraylist
 github.com/emirpasic/gods/trees
 github.com/emirpasic/gods/utils
 github.com/emirpasic/gods/lists
+# github.com/fsnotify/fsnotify v1.4.7
+github.com/fsnotify/fsnotify
 # github.com/jbenet/go-context v0.0.0-20150711004518-d14ea06fba99
 github.com/jbenet/go-context/io
 # github.com/kevinburke/ssh_config v0.0.0-20190725054713-01f96b0aa0cd
@@ -87,8 +89,6 @@ golang.org/x/net/internal/socks
 golang.org/x/sys/unix
 golang.org/x/sys/windows
 golang.org/x/sys/cpu
-# gopkg.in/go-playground/webhooks.v5 v5.13.0
-gopkg.in/go-playground/webhooks.v5/github
 # gopkg.in/src-d/go-billy.v4 v4.3.2
 gopkg.in/src-d/go-billy.v4
 gopkg.in/src-d/go-billy.v4/osfs
