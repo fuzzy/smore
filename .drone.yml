@@ -6,32 +6,24 @@ name: arm64
 platform:
   os: linux
   arch: arm64
+  
+clone:
+  disable: true
 
 steps:
-- name: code build
+- name: clone
   image: golang:alpine
   commands:
-  - go build -v
-  
-- name: image build
+  - apk update
+  - apk add go git
+  - git clone https://github.com/octocat/hello-world.git .
+  - git checkout $DRONE_COMMIT
+
+- name: build
+  commands:
+  - go build
+  - go test
+
+- name: image
   image: plugins/docker
   repo: reg.devfu.net/smore:arm64
-
----
-kind: pipeline
-type: docker
-name: amd64
-
-platform:
-  os: linux
-  arch: amd64
-
-steps:
-- name: code build
-  image: golang:alpine
-  commands:
-  - go build -v
-  
-- name: image build
-  image: plugins/docker
-  repo: reg.devfu.net/smore:amd64
