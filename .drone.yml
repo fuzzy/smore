@@ -1,11 +1,11 @@
 ---
 kind: pipeline
 type: docker
-name: arm64
+name: amd64
 
 platform:
   os: linux
-  arch: arm64
+  arch: amd64
   
 clone:
   disable: true
@@ -16,7 +16,7 @@ steps:
   commands:
   - apk update
   - apk add go git
-  - git clone https://github.com/octocat/hello-world.git .
+  - git clone https://git.devfu.net/fuzzy/smore.git .
   - git checkout $DRONE_COMMIT
 
 - name: build
