@@ -1,5 +1,37 @@
 ---
-pipeline:
-  build:
-    image: plugins/docker
-    repo: reg.devfu.net/smore
+kind: pipeline
+type: docker
+name: default
+
+platform:
+  os: linux
+  arch: arm64
+
+steps:
+- name: code build
+  image: golang:alpine
+  commands:
+  - go build -v
+  
+- name: image build
+  image: plugins/docker
+  repo: reg.devfu.net/smore:arm64
+
+---
+kind: pipeline
+type: docker
+name: default
+
+platform:
+  os: linux
+  arch: amd64
+
+steps:
+- name: code build
+  image: golang:alpine
+  commands:
+  - go build -v
+  
+- name: image build
+  image: plugins/docker
+  repo: reg.devfu.net/smore:amd64
