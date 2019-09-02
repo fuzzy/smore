@@ -15,13 +15,55 @@ steps:
   image: golang:alpine
   commands:
   - apk update
-  - apk add go git
+  - apk add git
   - git clone https://git.devfu.net/fuzzy/smore.git .
   - git checkout $DRONE_COMMIT
 
 - name: build
   image: golang:alpine
   commands:
+  - apk update
+  - apk add git
+  - go build
+  - go test
+
+- name: docker  
+  image: plugins/docker
+  settings:
+    repo: reg.devfu.net/smore:amd64
+
+trigger:
+  branch:
+  - master
+  event:
+  - push
+
+---
+kind: pipeline
+type: docker
+name: arm64
+
+platform:
+  os: linux
+  arch: arm64
+  
+clone:
+  disable: true
+
+steps:
+- name: clone
+  image: golang:alpine
+  commands:
+  - apk update
+  - apk add git
+  - git clone https://git.devfu.net/fuzzy/smore.git .
+  - git checkout $DRONE_COMMIT
+
+- name: build
+  image: golang:alpine
+  commands:
+  - apk update
+  - apk add git
   - go build
   - go test
 
