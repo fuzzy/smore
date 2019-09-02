@@ -12,7 +12,7 @@ clone:
 
 steps:
 - name: clone
-  image: golang:alpine
+  image: alpine
   commands:
   - apk update
   - apk add go git
