@@ -24,11 +24,6 @@ steps:
   - go build
   - go test
 
-- name: docker  
-  image: plugins/docker
-  settings:
-    repo: reg.devfu.net/smore:arm64
-
 trigger:
   branch:
   - master
