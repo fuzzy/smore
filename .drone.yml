@@ -12,7 +12,7 @@ clone:
 
 steps:
 - name: clone
-  image: alpine
+  image: golang:alpine
   commands:
   - apk update
   - apk add go git
@@ -20,9 +20,15 @@ steps:
   - git checkout $DRONE_COMMIT
 
 - name: build
+  image: golang:alpine
   commands:
   - go build
   - go test
+
+- name: docker  
+  image: plugins/docker
+  settings:
+    repo: reg.devfu.net/smore:arm64
 
 trigger:
   branch:
