@@ -26,6 +26,35 @@ steps:
     tags:
       - amd64
       - "amd64-${DRONE_COMMIT_SHA:0:8}"
+
+---
+kind: pipeline
+name: build-arm64
+
+platform:
+  os: linux
+  arch: arm64
+
+steps:
+- name: build-push-devfu
+  image: plugins/docker
+  settings:
+    repo: reg.devfu.net/smore
+  tags:
+    - arm64
+    - "arm64-${DRONE_COMMIT_SHA:0:8}"
+    
+- name: build-push-dockerhub
+  image: plugins/docker
+  settings:
+    username:
+      from_secret: dockerHubUserName
+    password:
+      from_secret: dockerHubPassword
+    repo: fuzzyoni/smore
+    tags:
+      - arm64
+      - "arm64-${DRONE_COMMIT_SHA:0:8}"
       
 # pipeline:
 #   amd64-image:
