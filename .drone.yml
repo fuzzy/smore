@@ -3,10 +3,6 @@
 kind: pipeline
 name: build-arm64
 
-platform:
-  os: linux
-  arch: arm64
-
 steps:
 - name: build-push-devfu
   image: plugins/docker
