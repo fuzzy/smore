@@ -13,19 +13,17 @@ steps:
     repo: reg.devfu.net/smore
   tags:
     - amd64
-    - "amd64-${DRONE_COMMIT_SHA:0:8}"
     
-- name: build-push-dockerhub
-  image: plugins/docker
-  settings:
-    username:
-      from_secret: dockerHubUserName
-    password:
-      from_secret: dockerHubPassword
-    repo: fuzzyoni/smore
-    tags:
-      - amd64
-      - "amd64-${DRONE_COMMIT_SHA:0:8}"
+# - name: build-push-dockerhub
+#   image: plugins/docker
+#   settings:
+#     username:
+#       from_secret: dockerHubUserName
+#     password:
+#       from_secret: dockerHubPassword
+#     repo: fuzzyoni/smore
+#     tags:
+#       - amd64
 
 ---
 kind: pipeline
@@ -42,19 +40,17 @@ steps:
     repo: reg.devfu.net/smore
   tags:
     - arm64
-    - "arm64-${DRONE_COMMIT_SHA:0:8}"
     
-- name: build-push-dockerhub
-  image: plugins/docker
-  settings:
-    username:
-      from_secret: dockerHubUserName
-    password:
-      from_secret: dockerHubPassword
-    repo: fuzzyoni/smore
-    tags:
-      - arm64
-      - "arm64-${DRONE_COMMIT_SHA:0:8}"
+# - name: build-push-dockerhub
+#   image: plugins/docker
+#   settings:
+#     username:
+#       from_secret: dockerHubUserName
+#     password:
+#       from_secret: dockerHubPassword
+#     repo: fuzzyoni/smore
+#     tags:
+#       - arm64
       
 depends_on:
 - build-amd64
