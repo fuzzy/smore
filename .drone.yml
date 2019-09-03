@@ -56,12 +56,5 @@ steps:
       - arm64
       - "arm64-${DRONE_COMMIT_SHA:0:8}"
       
-# pipeline:
-#   amd64-image:
-#     image: plugins/docker
-#     repo: reg.devfu.net/smore
-#     tags: amd64
-#   amd64-image:
-#     image: plugins/docker
-#     repo: reg.devfu.net/smore
-#     tags: amd64
+depends_on:
+- build-amd64
