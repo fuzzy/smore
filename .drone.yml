@@ -2,10 +2,10 @@
 
 kind: pipeline
 type: docker
-name: build-arm64
+name: build-amd64
 
 platform:
-  arch: arm64
+  arch: amd64
   os: linux
 
 steps:
@@ -14,5 +14,5 @@ steps:
   settings:
     repo: reg.devfu.net/smore
     tags:
-      - arm64
+      - amd64
     
