@@ -10,4 +10,6 @@ ADD . /go/src/git.devfu.net/fuzzy/smore/
 RUN env GOPATH=/go go get -v git.devfu.net/fuzzy/smore
 VOLUME /config
 COPY smore.yml /config/site.yml
-CMD /bin/sh -c '/go/bin/smore -config /config/site.yml'
+#CMD /bin/sh -c '/go/bin/smore -config /config/site.yml'
+COPY test.sh /test.sh
+CMD /bin/sh -c /test.sh
