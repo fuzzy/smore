@@ -4,33 +4,29 @@ kind: pipeline
 type: docker
 name: build-arm64
 
-platform:
-  os: linux
-  arch: arm
-
 steps:
 - name: smore-arm64
-  image: plugins/docker:linux-arm64
-  settings:
-    repo: reg.devfu.net/smore
-    tags:
-      - arm
-
----
-
-kind: pipeline
-type: docker
-name: build-amd64
-platform:
-  os: linux
-  arch: amd64
-
-steps:
-- name: smore-amd64
   image: plugins/docker
   settings:
     repo: reg.devfu.net/smore
     tags:
-      - amd64
+      - arm64
+
+# ---
+
+# kind: pipeline
+# type: docker
+# name: build-amd64
+# platform:
+#   os: linux
+#   arch: amd64
+
+# steps:
+# - name: smore-amd64
+#   image: plugins/docker
+#   settings:
+#     repo: reg.devfu.net/smore
+#     tags:
+#       - amd64
 
 
