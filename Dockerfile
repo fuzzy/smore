@@ -2,6 +2,8 @@
 # RUN apk update
 # RUN apk add go gcc libpthread-stubs util-linux musl-utils musl-dev musl git
 FROM debian:buster
+RUN ping -c 1 8.8.8.8
+RUN ping -c 1 google.com
 # RUN apt update
 # RUN apt install -y go build-essential git
 # RUN mkdir -p /config
