@@ -12,9 +12,6 @@ steps:
     tags:
       - arm64
 
-node:
-  arch: arm64
-
 ---
 
 kind: pipeline
@@ -29,6 +26,4 @@ steps:
     tags:
       - amd64
 
-node:
-  arch: amd64
 
