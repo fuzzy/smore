@@ -2,24 +2,6 @@
 
 kind: pipeline
 type: docker
-name: build-amd64
-
-platform:
-  arch: amd64
-  os: linux
-
-steps:
-- name: build-push-devfu
-  image: plugins/docker
-  settings:
-    repo: reg.devfu.net/smore
-    tags:
-      - amd64
-    
----
-
-kind: pipeline
-type: docker
 name: build-arm64
 
 platform:
@@ -34,5 +16,23 @@ steps:
     tags:
       - arm64
     
+---
+
+kind: pipeline
+type: docker
+name: build-amd64
+
+platform:
+  arch: amd64
+  os: linux
+
+steps:
+- name: build-push-devfu
+  image: plugins/docker
+  settings:
+    repo: reg.devfu.net/smore
+    tags:
+      - amd64
+    
 depends_on:
-- build-amd64
+- build-arm64
