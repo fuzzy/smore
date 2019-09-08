@@ -6,7 +6,7 @@ name: build-arm64
 
 platform:
   os: linux
-  arch: arm64
+  arch: arm
 
 steps:
 - name: smore-arm64
@@ -14,7 +14,7 @@ steps:
   settings:
     repo: reg.devfu.net/smore
     tags:
-      - arm64
+      - arm
 
 ---
 
