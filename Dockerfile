@@ -1,4 +1,4 @@
-FROM alpine:3
+FROM alpine:3.9
 RUN apk update
 RUN apk add go gcc libpthread-stubs util-linux musl-utils musl-dev musl git
 RUN mkdir -p /config
