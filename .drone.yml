@@ -34,3 +34,5 @@ steps:
     tags:
       - arm64
     
+depends_on:
+- build-amd64
