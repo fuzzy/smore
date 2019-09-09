@@ -1,8 +1,6 @@
 FROM alpine:3.9
 RUN apk update
 RUN apk add go gcc libpthread-stubs util-linux musl-utils musl-dev musl git
-RUN apt update
-RUN apt install -y go build-essential git
 RUN mkdir -p /config
 RUN rm -rf /go/src/git.devfu.net/fuzzy/smore/
 ADD . /go/src/git.devfu.net/fuzzy/smore/
