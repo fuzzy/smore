@@ -9,8 +9,15 @@ platform:
   arch: amd64
 
 steps:
-- name: smore
+- name: smore-local
   image: plugins/docker
   settings:
     repo: reg.devfu.net/smore
-
+- name: smore-dockerhub
+  image: plugins/docker
+  settings:
+    username:
+      from_secret: DH_USERNAME
+    password:
+      from_secret: DH_PASSWORD
+    repo: fuzzyoni/smore
