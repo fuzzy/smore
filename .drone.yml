@@ -1,14 +1,9 @@
 ---
 kind: pipeline
 type: docker
-name: private
-
-platform:
-  os: linux
-  arch: amd64
-
+name: build
 steps:
-- name: smore
+- name: smore-local
   image: plugins/docker
   settings:
     repo: reg.devfu.net/smore
@@ -16,13 +11,9 @@ steps:
 ---
 kind: pipeline
 type: docker
-name: public
-
-platform:
-  os: linux
-  arch: amd64
-
-- name: smore
+name: build
+steps:
+- name: smore-dockerhub
   image: plugins/docker
   settings:
     username:
