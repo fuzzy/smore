@@ -1,7 +1,7 @@
 ---
 kind: pipeline
 type: docker
-name: build
+name: private
 steps:
 - name: smore-local
   image: plugins/docker
@@ -11,7 +11,7 @@ steps:
 ---
 kind: pipeline
 type: docker
-name: build
+name: public
 steps:
 - name: smore-dockerhub
   image: plugins/docker
