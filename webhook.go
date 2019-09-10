@@ -7,6 +7,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"strings"
 
 	"gopkg.in/src-d/go-git.v4"
 )
@@ -56,6 +57,12 @@ func GitWebHook(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// at the moment I only support gitea, this should change soon
+	if strings.Contains(string(hc.Payload), "Gitea") {
+		log.Println("Gitea it is!!!!")
+	}
+	if strings.Contains(string(hc.Payload), "Github") {
+		log.Println("GITHUB!!!")
+	}
 	pload := GiteaPush{}
 	json.Unmarshal(hc.Payload, &pload)
 
