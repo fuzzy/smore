@@ -2,6 +2,7 @@
 interface: 0.0.0.0
 port: 8080
 template: site.tmpl
+highlight: monokai
 dirs:
   base: /home/fuzzy/app
   static: static

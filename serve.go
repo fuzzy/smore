@@ -34,7 +34,7 @@ func highlightCodeBlock(source, lang string) string {
 	}
 	l = chroma.Coalesce(l)
 	it, _ := l.Tokenise(nil, source)
-	_ = html.New().Format(&w, styles.Get("vim"), it)
+	_ = html.New().Format(&w, styles.Get(cfg.Highlight), it)
 	return `<div class="highlight">` + "\n" + w.String() + "\n" + `</div>`
 }
 
