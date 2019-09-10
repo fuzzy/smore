@@ -7,6 +7,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"strings"
 
 	"gopkg.in/src-d/go-git.v4"
 )
@@ -56,11 +57,21 @@ func GitWebHook(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// at the moment I only support gitea, this should change soon
+	if strings.Contains(string(hc.Payload), "Gitea") {
+		log.Println("Gitea it is!!!!")
+	}
+	if strings.Contains(string(hc.Payload), "Github") {
+		log.Println("GITHUB!!!")
+	}
 	pload := GiteaPush{}
 	json.Unmarshal(hc.Payload, &pload)
 
 	// if our secret matches then we should go ahead and update our checkout
 	if pload.Secret == cfg.Git.Webhook.Secret {
+		log.Printf("%+v", pload)
+		log.Println("---------------------------------")
+		log.Printf("%+v", pload.Repository)
+		log.Println("---------------------------------")
 		log.Printf("Updating repo from: %s", pload.Repository.CloneURL)
 		log.Printf("Updating repo branch: %s", pload.Repository.DefaultBranch)
 		log.Printf("Updating repo to commit: %s", pload.After)

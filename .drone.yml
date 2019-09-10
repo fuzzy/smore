@@ -1,13 +1,18 @@
 ---
-
 kind: pipeline
-name: build-arm64
+type: docker
+name: build
+
+platform:
+  os: linux
+  arch: amd64
 
 steps:
-- name: build-push-devfu
+- name: smore
   image: plugins/docker
   settings:
-    repo: reg.devfu.net/smore
-    tags:
-      - arm64
-    
+    username:
+      from_secret: DH_USERNAME
+    password:
+      from_secret: DH_PASSWORD
+    repo: fuzzyoni/smore
