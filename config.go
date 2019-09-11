@@ -15,6 +15,7 @@ type Config struct {
 	Interface string `yaml:"interface"`
 	Port      int64  `yaml:"port"`
 	Template  string `yaml:"template"`
+	Highlight string `yaml:"highlight"`
 	Dirs      struct {
 		Root      string
 		Base      string `yaml:"base"`
