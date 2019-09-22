@@ -68,7 +68,7 @@ func main() {
 	app := cli.NewApp()
 	app.Name = "SMORE"
 	app.Usage = "Render Org/MarkDown files as HTML, on the fly."
-	app.Version = "0.0.1"
+	app.Version = "0.4.15"
 	app.Flags = []cli.Flag{
 		cli.StringFlag{Name: "config", Value: "/app/smore.yml", Usage: "Specify the config file to use."},
 	}
