@@ -107,6 +107,50 @@ func ReadConfig(fn string) *Config {
 		log.Fatal(err)
 	}
 
+	// // highlighter sanity check
+	// if retv.Highlight != "" {
+	// 	valid := []string{
+	// 		"bap",
+	// 		"algol",
+	// 		"algol_nu",
+	// 		"api",
+	// 		"arduino",
+	// 		"autumn",
+	// 		"borland",
+	// 		"bw",
+	// 		"colorful",
+	// 		"dracula",
+	// 		"emacs",
+	// 		"friendly",
+	// 		"fruity",
+	// 		"github",
+	// 		"igor",
+	// 		"lovelace",
+	// 		"manni",
+	// 		"monokai",
+	// 		"monokailight",
+	// 		"murphy",
+	// 		"native",
+	// 		"paraiso-dark",
+	// 		"paraiso-light",
+	// 		"pastie",
+	// 		"perldoc",
+	// 		"pygments",
+	// 		"rainbow_dash",
+	// 		"rrt",
+	// 		"solarized-dark256",
+	// 		"solarized-dark",
+	// 		"solarized-light",
+	// 		"swapoff",
+	// 		"tango",
+	// 		"trac",
+	// 		"vim",
+	// 		"vs",
+	// 		"xcode",
+	// 	}
+	// }
+
+	// repo setup
 	if retv.Git.Repo != "" {
 		data := strings.Split(retv.Git.Repo, "/")
 		retv.Dirs.Root = retv.Dirs.Base
