@@ -72,9 +72,13 @@ func ServeMarkup(w http.ResponseWriter, r *http.Request) {
 			Path    string
 			Title   string
 			Payload string
+			Author  string
+			Edited  string
 		}{
-			Path:  _path,
-			Title: title,
+			Path:   _path,
+			Title:  title,
+			Author: getFileAuthor(_path),
+			Edited: getFileLastChanged(_path),
 		}
 
 		// now parse that data accordingly

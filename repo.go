@@ -1,7 +1,9 @@
 package main
 
 import (
+	"fmt"
 	"log"
+	"strings"
 	"time"
 
 	"gopkg.in/src-d/go-git.v4"
@@ -18,6 +20,38 @@ func safeError(e error) bool {
 		}
 	}
 	return false
+}
+
+func getFileAuthor(f string) string {
+	retv := ""
+	nf := strings.Split(f, cfg.Dirs.Base)[1][1:]
+	repo, err := git.PlainOpen(cfg.Dirs.Base)
+	if lcheck(err) != nil && !safeError(err) {
+		log.Fatal(err)
+	}
+	cIter, err := repo.Log(&git.LogOptions{FileName: &nf})
+	c, err := cIter.Next()
+	for err == nil {
+		retv = fmt.Sprint(c.Author)
+		c, err = cIter.Next()
+	}
+	return retv
+}
+
+func getFileLastChanged(f string) string {
+	retv := ""
+	nf := strings.Split(f, cfg.Dirs.Base)[1][1:]
+	repo, err := git.PlainOpen(cfg.Dirs.Base)
+	if lcheck(err) != nil && !safeError(err) {
+		log.Fatal(err)
+	}
+	cIter, err := repo.Log(&git.LogOptions{FileName: &nf})
+	c, err := cIter.Next()
+	if err != nil {
+		log.Println(err)
+	}
+	retv = fmt.Sprint(c.Committer)
+	return retv
 }
 
 func CloneRepo(r, b string) error {
