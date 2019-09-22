@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"log"
+	"regexp"
 	"strings"
 	"time"
 
@@ -22,6 +23,16 @@ func safeError(e error) bool {
 	return false
 }
 
+func cleanupAttribution(s string) string {
+	start := s[1:][:len(s)-2]
+	re := regexp.MustCompile("([a-zA-Z\\.\\-\\_0-9]+)@([a-zA-Z0-9\\.\\-\\_]+)")
+	next := re.ReplaceAllString(start, "<${1} _at_ ${2}>>")
+	bits := strings.Split(next, "> ")
+	date := strings.Split(bits[1], " ")
+	retv := fmt.Sprintf("%s at %s %s", bits[0], date[0], date[1])
+	return retv
+}
+
 func getFileAuthor(f string) string {
 	retv := ""
 	nf := strings.Split(f, cfg.Dirs.Base)[1][1:]
@@ -35,7 +46,7 @@ func getFileAuthor(f string) string {
 		retv = fmt.Sprint(c.Author)
 		c, err = cIter.Next()
 	}
-	return retv
+	return cleanupAttribution(retv)
 }
 
 func getFileLastChanged(f string) string {
@@ -51,7 +62,7 @@ func getFileLastChanged(f string) string {
 		log.Println(err)
 	}
 	retv = fmt.Sprint(c.Committer)
-	return retv
+	return cleanupAttribution(retv)
 }
 
 func CloneRepo(r, b string) error {
