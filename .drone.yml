@@ -1,18 +1,15 @@
 ---
 kind: pipeline
-type: docker
-name: build
-
-platform:
-  os: linux
-  arch: amd64
+type: kubernetes
+name: default
 
 steps:
-- name: smore
-  image: plugins/docker
-  settings:
-    username:
-      from_secret: DH_USERNAME
-    password:
-      from_secret: DH_PASSWORD
-    repo: fuzzyoni/smore
+- name: build
+  image: golang:latest
+  commands:
+    - mkdir -p $GOPATH/src/git.lan.toefu.net/fuzzy
+    - ln -sf $PWD $GOPATH/src/git.lan.toefu.net/fuzzy/smore
+    - cd $GOPATH/src/git.lan.toefu.net/fuzzy/smore
+    - go get -d .
+    - go build -v .
+
