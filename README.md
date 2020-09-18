@@ -1,4 +1,4 @@
-[![Build Status](https://lab.devfu.net/api/badges/wombat/smore/status.svg)](https://lab.devfu.net/wombat/smore)
+[![Build Status](http://drone.lan.toefu.net/api/badges/fuzzy/smore/status.svg)](http://drone.lan.toefu.net/fuzzy/smore)
 
 # Smore - Simple Markdown & ORg sErver
 
