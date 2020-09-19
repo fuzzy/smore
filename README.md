@@ -15,3 +15,4 @@ Environment variables:
 - SMORE_GIT_REPO
 - SMORE_GIT_INTERVAL
 - SMORE_GIT_WEBHOOK
+
